@@ -1,0 +1,70 @@
+﻿@model IEnumerable<LibraryWebApp.Book>
+
+@{
+    ViewData["Title"] = "Детально";
+}
+
+<h1>Детально про книгу @ViewBag.BookName</h1>
+<p>
+    @Html.ActionLink("Видання", "Index", "Publisheds", new { id = ViewBag.BookId, name = ViewBag.BookName })
+</p>
+<p>
+    @Html.ActionLink("Автори", "Index", "Wrotes", new { id = ViewBag.BookId, name = ViewBag.bookName })
+</p>
+<p>
+    @Html.ActionLink("Теги", "Index", "Descriptions", new { id = ViewBag.BookId, name = ViewBag.bookName })
+</p>
+@foreach (var item in Model)
+{
+    <div>
+        <h4>Book</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => item.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => item.YearWritten)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.YearWritten)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => item.Isbn)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.Isbn)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => item.Genre)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => item.Genre.Name)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+        <a asp-action="Index">Назад до списку</a>
+    </div>
+}
+@*@foreach (var item in Model.)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(model => item.Wrotes)
+        </td>
+        <td>
+            @Html.DisplayFor(model => item.Id)
+        </td>
+
+    </tr>
+}
+*@
+
+<p>
+    @Html.ActionLink("Коментарі", "Index", "Comments", new { id = ViewBag.BookId, name = ViewBag.bookName })
+</p>

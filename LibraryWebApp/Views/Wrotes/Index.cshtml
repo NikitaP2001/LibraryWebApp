@@ -1,0 +1,44 @@
+﻿@model IEnumerable<LibraryWebApp.Wrote>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Автори книги @ViewBag.BookName</h1>
+
+<p>
+    <a asp-action="Create">Додати автора до книги</a>
+</p>
+<p>
+    @Html.ActionLink("Додати нового автора", "Index", "Authors")
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.Author.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Book.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Детально</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Вилучити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

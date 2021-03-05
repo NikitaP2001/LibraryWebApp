@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Головна</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.ActionLink("Жанри", "Index", "Genres")
+                </th>
+                <th>
+                    @Html.ActionLink("Книги", "Index", "Books")
+                </th>
+                <th>
+                    @Html.ActionLink("Автори", "Index", "Authors")
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    </table>
+
+</div>

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<LibraryWebApp.Description>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Теги за книгою @ViewBag.BookName</h1>
+
+<p>
+    <a asp-action="Create">Додати тег до книги</a>
+    @Html.ActionLink("Додати новий тег", "Index", "Tags")
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Book)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tag)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Book.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tag.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Детально</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
