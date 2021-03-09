@@ -4,20 +4,21 @@
     ViewData["Title"] = "Детально";
 }
 
-<h1>Детально про книгу @ViewBag.BookName</h1>
+<h3>Детально про книгу @ViewBag.BookName</h3>
 <p>
-    @Html.ActionLink("Видання", "Index", "Publisheds", new { id = ViewBag.BookId, name = ViewBag.BookName })
-</p>
-<p>
-    @Html.ActionLink("Автори", "Index", "Wrotes", new { id = ViewBag.BookId, name = ViewBag.bookName })
-</p>
-<p>
-    @Html.ActionLink("Теги", "Index", "Descriptions", new { id = ViewBag.BookId, name = ViewBag.bookName })
+    <div>
+        @Html.ActionLink("Видання", "Index", "Publisheds", new { id = ViewBag.BookId, name = ViewBag.BookName })
+    </div>
+    <div>
+        @Html.ActionLink("Автори", "Index", "Wrotes", new { id = ViewBag.BookId, name = ViewBag.bookName })
+    </div>
+    <div>
+        @Html.ActionLink("Теги", "Index", "Descriptions", new { id = ViewBag.BookId, name = ViewBag.bookName })
+    </div>
 </p>
 @foreach (var item in Model)
 {
     <div>
-        <h4>Book</h4>
         <hr />
         <dl class="row">
             <dt class="col-sm-2">
@@ -51,20 +52,48 @@
         <a asp-action="Index">Назад до списку</a>
     </div>
 }
-@*@foreach (var item in Model.)
+@foreach (var item in Model)
 {
-    <tr>
-        <td>
-            @Html.DisplayFor(model => item.Wrotes)
-        </td>
-        <td>
-            @Html.DisplayFor(model => item.Id)
-        </td>
-
-    </tr>
+    <h4>Перші 10 коментарів</h4>
+    @foreach (var comment in item.Comments.Take(10))
+    {
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        <div class="ava-column bl-img">
+                            @if (comment.img == null)
+                            {
+                                <span style="display: block; width: 64px; height: 64px; background: #ccc);"></span>
+                            }
+                            else
+                            {
+                                <img src="@comment.img" width="64" height="64">
+                            }
+                        </div>
+                    </td>
+                    <td class="right-td">
+                        <div class="comment-entry">
+                            <p>
+                                @Html.ActionLink(comment.ReaderName, "Details", "Readers", new { id = comment.ReaderId })
+                                <span>@comment.DateWritten</span>
+                            </p>
+                            <p>
+                                @comment.Text
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div></div>
+        </div>
+    }
 }
-*@
 
-<p>
-    @Html.ActionLink("Коментарі", "Index", "Comments", new { id = ViewBag.BookId, name = ViewBag.bookName })
-</p>
+
+@foreach (var item in Model)
+{
+<form asp-controller="Comments" asp-action="Index" asp-route-id="@item.Id" >
+    <input type="submit" value="Всі коментарі" class="btn-info" /> 
+</form>
+}

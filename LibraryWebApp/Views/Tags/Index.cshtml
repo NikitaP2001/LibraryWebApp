@@ -39,3 +39,9 @@
 }
     </tbody>
 </table>
+@if (ViewBag.BookId != null)
+{
+    <div>
+        @Html.ActionLink("Назад до опису ", "Index", "Descriptions", new { id = ViewBag.BookId, name = ViewBag.BookName })
+    </div>
+}

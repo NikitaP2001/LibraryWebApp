@@ -19,12 +19,27 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index(int? id, string? name)
+        public async Task<IActionResult> Index(int? id, string? name, string SearchString)
         {
-            var AllBooks = _context.Books;
-            if (id == null) return View(await AllBooks.ToListAsync());
+            var Books = from m in _context.Books
+                        select m;
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                ViewBag.Title = "Книги";
+                ViewBag.BooksAboutMes = "Результат пошуку книги " + SearchString;
+                Books = Books.Where(s => s.Name.Contains(SearchString));
+                return View(await Books.ToListAsync());
+            }
+            if ( id == null)
+            {
+                ViewBag.Title = "Всі книги";
+                ViewBag.BooksAboutMes = "Список всіх книг";
+                var AllBooks = _context.Books.Include(b => b.Genre);
+                return View(await AllBooks.ToListAsync());
+            }
             ViewBag.GenreId = id;
-            ViewBag.GenreName = name;
+            ViewBag.Title = "Книги за жанром";
+            ViewBag.BooksAboutMes = "Список книг за жанром " + name;
             var booksByGenre = _context.Books.Where(b => b.GenreId == id).Include(b => b.Genre);
             return View(await booksByGenre.ToListAsync());
         }
@@ -46,13 +61,14 @@ namespace LibraryWebApp.Controllers
             }
             ViewBag.BookId = book.Id;
             ViewBag.BookName = book.Name;
-            var AuthorsByBook = _context.Books.Where(b => b.Id == id).Include(b => b.Wrotes);
+            var AuthorsByBook = _context.Books.Where(b => b.Id == id).Include(b => b.Comments);
             return View(await AuthorsByBook.ToListAsync());
         }
 
         // GET: Books/Create
-        public IActionResult Create(int genreId)
+        public IActionResult Create(int? genreId)
         {
+            ViewBag.GenreId = genreId;
             ViewBag.GenreId = genreId;
             ViewBag.GenreName = _context.Genres.Where(c => c.Id == genreId).FirstOrDefault().Name;
             return View();
@@ -70,7 +86,7 @@ namespace LibraryWebApp.Controllers
             {
                 _context.Add(book);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Books", new {id = genreId, name = _context.Genres.Where(c => c.Id == genreId).FirstOrDefault().Name});
+                return RedirectToAction("Index", "Books", new { id = genreId, name = _context.Genres.Where(c => c.Id == genreId).FirstOrDefault().Name });
             }
             return RedirectToAction("Index", "Books", new { id = genreId, name = _context.Genres.Where(c => c.Id == genreId).FirstOrDefault().Name });
         }

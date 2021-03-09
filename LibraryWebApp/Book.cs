@@ -28,7 +28,7 @@ namespace LibraryWebApp
         [Required(ErrorMessage = "Поле не повинно бути порожнім")]
         public int Isbn { get; set; }
         public int GenreId { get; set; }
-
+        [Display(Name = "Жанр")]
         public virtual Genre Genre { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Description> Descriptions { get; set; }

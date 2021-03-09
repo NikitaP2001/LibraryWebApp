@@ -13,8 +13,9 @@ namespace LibraryWebApp
         public bool Status { get; set; }
         public int ReaderId { get; set; }
         public int BookId { get; set; }
-
+        [Display(Name = "Книга")]
         public virtual Book Book { get; set; }
+        [Display(Name = "Читач")]
         public virtual Reader Reader { get; set; }
     }
 }

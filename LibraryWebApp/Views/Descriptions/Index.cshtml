@@ -8,7 +8,9 @@
 
 <p>
     <a asp-action="Create">Додати тег до книги</a>
-    @Html.ActionLink("Додати новий тег", "Index", "Tags")
+</p>
+<p>
+    @Html.ActionLink("Додати новий тег", "Index", "Tags", new { BookId = ViewBag.BookId, name = ViewBag.BookName })
 </p>
 <table class="table">
     <thead>
@@ -40,3 +42,6 @@
 }
     </tbody>
 </table>
+<div>
+    @Html.ActionLink("Назад до книги ", "Details", "Books", new { id = ViewBag.BookId })
+</div>

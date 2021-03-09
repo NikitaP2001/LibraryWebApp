@@ -62,15 +62,27 @@ namespace LibraryWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TagId,BookId")] Description description)
         {
+            int BookId = description.BookId;                        //Get bookid for redirecttoaction
+            var book = await _context.Books.FindAsync(BookId);
+            string BookName = book.Name;
+            //----------------------------------------------------------------
+            var Desc = _context.Descriptions;   //Checks that it is no copy of connection
+            foreach(var d in Desc)
+            {
+                if (d.BookId == ViewBag.BookId && d.TagId == ViewBag.TagId)
+                {
+                    return RedirectToAction("Index", "Descriptions", new { id = BookId, name = BookName });
+                }
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(description);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Descriptions", new { id = BookId, name = BookName });
             }
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name", description.BookId);
             ViewData["TagId"] = new SelectList(_context.Tags, "Id", "Name", description.TagId);
-            return View(description);
+            return RedirectToAction("Index", "Descriptions", new { id = BookId, name = BookName });
         }
 
         // GET: Descriptions/Edit/5
@@ -154,9 +166,12 @@ namespace LibraryWebApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var description = await _context.Descriptions.FindAsync(id);
+            int BookId = description.BookId;
+            var book = await _context.Books.FindAsync(BookId);
+            string BookName = book.Name;
             _context.Descriptions.Remove(description);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Descriptions", new { id = BookId, name = BookName });
         }
 
         private bool DescriptionExists(int id)

@@ -19,8 +19,10 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: Tags
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? BookId, string? name)
         {
+            ViewBag.BookId = BookId;
+            ViewBag.BookName = name;
             return View(await _context.Tags.ToListAsync());
         }
 

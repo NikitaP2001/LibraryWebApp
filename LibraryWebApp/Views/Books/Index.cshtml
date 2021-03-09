@@ -1,14 +1,23 @@
 ﻿@model IEnumerable<LibraryWebApp.Book>
 
 @{
-    ViewData["Title"] = "Книги за жанром";
+    ViewData["Title"] = ViewBag.Title;
 }
 
-<h1>Книги за категорією @ViewBag.GenreName</h1>
+<h1>@ViewBag.BooksAboutMes</h1>
 
+<form asp-controller="Books" asp-action="Index">
+    <p>
+        Title: <input type="text" name="SearchString" />
+        <input type="submit" value="Пошук" />
+    </p>
+</form>
+@if (ViewBag.GenreId != null)
+{
 <p>
-    @Html.ActionLink("Додати нову книгу", "Create")
+    @Html.ActionLink("Додати нову книгу", "Create", new { genreId = ViewBag.GenreId })
 </p>
+}
 <table class="table">
     <thead>
         <tr>

@@ -19,9 +19,11 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: ListNotes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id, string? name)
         {
-            var libraryContext = _context.ListNotes.Include(l => l.Book).Include(l => l.Reader);
+            ViewBag.ReaderId = id;
+            ViewBag.ReaderName = name;
+            var libraryContext = _context.ListNotes.Where(l =>l.ReaderId == id).Include(l => l.Book).Include(l => l.Reader);
             return View(await libraryContext.ToListAsync());
         }
 
@@ -60,15 +62,27 @@ namespace LibraryWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Status,ReaderId,BookId")] ListNote listNote)
         {
+            int ReaderId = listNote.ReaderId;                        //Get readerid for redirecttoaction
+            var reader = await _context.Readers.FindAsync(ReaderId);
+            string ReaderName = reader.Login;
+            //----------------------------------------------------------------
+            var Listn = _context.ListNotes;   //Checks that it is no copy of connection
+            foreach (var d in Listn)
+            {
+                if (d.BookId == ViewBag.BookId && d.ReaderId == ViewBag.ReaderId)
+                {
+                    return RedirectToAction("Index", "ListNotes", new { id = ReaderId, name = ReaderName });
+                }
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(listNote);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "ListNotes", new { id = ReaderId, name = ReaderName });
             }
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name", listNote.BookId);
             ViewData["ReaderId"] = new SelectList(_context.Readers, "Id", "Login", listNote.ReaderId);
-            return View(listNote);
+            return RedirectToAction("Index", "ListNotes", new { id = ReaderId, name = ReaderName });
         }
 
         // GET: ListNotes/Edit/5

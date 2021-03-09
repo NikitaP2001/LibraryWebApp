@@ -4,10 +4,10 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Сторінка читача</h1>
+@Html.ActionLink("Читацький щоленник", "Index", "ListNotes", new { id = Model.Id, name = Model.Login })
 
 <div>
-    <h4>Reader</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -16,15 +16,9 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Login)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
-        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Редагувати</a> |
+    <a asp-action="Index">Назад до списку</a>
 </div>

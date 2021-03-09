@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Видання книги</h1>
+<h1>Видання книги @ViewBag.BookName</h1>
 
 <p>
-    @Html.ActionLink("Додати видавництво до книги", "Create", "Publisheds", new { Bookid = ViewBag.BookId})
+    @Html.ActionLink("Додати видавництво до книги", "Create", "Publisheds", new { id = ViewBag.BookId, name = ViewBag.BookName })
 </p>
 <table class="table">
     <thead>
@@ -25,23 +25,30 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Office)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Book.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Office)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Детально</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@if (ViewBag.BookId != null)
+{
+    <div>
+        @Html.ActionLink("Назад до книги", "Details", "Books", new { id = ViewBag.BookId })
+    </div>
+}

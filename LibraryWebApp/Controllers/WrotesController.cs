@@ -22,9 +22,7 @@ namespace LibraryWebApp.Controllers
         public async Task<IActionResult> Index(int? id, string? name)
         {
             if (id == null) {
-                if(ViewBag.BookId == null)
-                    return RedirectToAction("Index", "Genres");
-                else id = ViewBag.BookId;
+                return NotFound();
             }
             ViewBag.WroteId = id;
             ViewBag.BookId = id;

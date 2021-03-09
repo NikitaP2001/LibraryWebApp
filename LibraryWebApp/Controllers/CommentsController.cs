@@ -19,9 +19,12 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: Comments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var libraryContext = _context.Comments.Include(c => c.Book).Include(c => c.Reader);
+            var book = await _context.Books.FindAsync(id);
+            ViewBag.BookName = book.Name;
+            ViewBag.BookId = id;
+            var libraryContext = _context.Comments.Where(c => c.BookId == id).Include(c => c.Book).Include(c => c.Reader);
             return View(await libraryContext.ToListAsync());
         }
 
@@ -58,17 +61,20 @@ namespace LibraryWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Text,BookId,ReaderId")] Comment comment)
+        public async Task<IActionResult> Create([Bind("Id,Text,img,BookId,ReaderId")] Comment comment)
         {
+            comment.DateWritten = DateTime.Now;
+            var reader = await _context.Readers.FindAsync(comment.ReaderId);
+            comment.ReaderName = reader.Login;
             if (ModelState.IsValid)
             {
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Comments", new { id = comment.BookId, name = _context.Books.Where(c => c.Id == comment.BookId).FirstOrDefault().Name });
             }
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name", comment.BookId);
             ViewData["ReaderId"] = new SelectList(_context.Readers, "Id", "Login", comment.ReaderId);
-            return View(comment);
+            return RedirectToAction("Index", "Comments", new { id = comment.BookId, name = _context.Books.Where(c => c.Id == comment.BookId).FirstOrDefault().Name });
         }
 
         // GET: Comments/Edit/5

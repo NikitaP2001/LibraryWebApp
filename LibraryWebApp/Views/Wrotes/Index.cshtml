@@ -25,20 +25,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.Author.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Book.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Детально</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Вилучити</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Author.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Book.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Детально</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Вилучити</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@if (ViewBag.BookId != null)
+{
+    <div>
+        @Html.ActionLink("Назад до книги", "Details", "Books", new { id = ViewBag.BookId })
+    </div>
+}
