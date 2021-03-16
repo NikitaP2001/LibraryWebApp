@@ -27,7 +27,7 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: Tags/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? Bookid, string? Bookname)
         {
             if (id == null)
             {
@@ -45,7 +45,7 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: Tags/Create
-        public IActionResult Create()
+        public IActionResult Create(int? Bookid, string? Bookname)
         {
             return View();
         }
@@ -55,19 +55,19 @@ namespace LibraryWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Tag tag)
+        public async Task<IActionResult> Create(int? Bookid, string? Bookname, [Bind("Id,Name,Description")] Tag tag)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(tag);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Tags", new { id = Bookid, name = Bookname });
             }
-            return View(tag);
+            return RedirectToAction("Index", "Tags", new { id = Bookid, name = Bookname });
         }
 
         // GET: Tags/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? Bookid, string? Bookname)
         {
             if (id == null)
             {
@@ -79,6 +79,8 @@ namespace LibraryWebApp.Controllers
             {
                 return NotFound();
             }
+            ViewBag.BookId = Bookid;
+            ViewBag.BookName = Bookname;
             return View(tag);
         }
 
@@ -87,7 +89,7 @@ namespace LibraryWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Tag tag)
+        public async Task<IActionResult> Edit(int id, int? Bookid, string? Bookname, [Bind("Id,Name,Description")] Tag tag)
         {
             if (id != tag.Id)
             {
@@ -112,14 +114,16 @@ namespace LibraryWebApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Tags", new { id = ViewBag.BookId, name = ViewBag.BookName });
             }
-            return View(tag);
+            return RedirectToAction("Index", "Tags", new { id = ViewBag.BookId, name = ViewBag.BookName });
         }
 
         // GET: Tags/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int? Bookid, string? Bookname)
         {
+            ViewBag.BookId = Bookid;
+            ViewBag.BookName = Bookname;
             if (id == null)
             {
                 return NotFound();
@@ -138,12 +142,12 @@ namespace LibraryWebApp.Controllers
         // POST: Tags/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int? Bookid, string? Bookname)
         {
             var tag = await _context.Tags.FindAsync(id);
             _context.Tags.Remove(tag);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Tags", new { id = ViewBag.BookId, name = ViewBag.BookName });
         }
 
         private bool TagExists(int id)

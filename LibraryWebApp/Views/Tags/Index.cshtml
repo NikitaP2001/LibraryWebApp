@@ -7,7 +7,7 @@
 <h1>Теги</h1>
 
 <p>
-    <a asp-action="Create">Створити новий</a>
+    @Html.ActionLink("Створити новий", "Create", "Tags", new { Bookid = ViewBag.BookId, Bookname = ViewBag.BookName } )
 </p>
 <table class="table">
     <thead>
@@ -22,26 +22,30 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" asp-route-Bookid="@ViewBag.BookId" 
+                       asp-route-Bookname="@ViewBag.Bookname">Редагувати</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-Bookid="@ViewBag.BookId"
+                       asp-route-Bookname="@ViewBag.Bookname">Деталі</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"asp-route-Bookid="@ViewBag.BookId"
+                       asp-route-Bookname="@ViewBag.Bookname">Видалити</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 @if (ViewBag.BookId != null)
 {
-    <div>
-        @Html.ActionLink("Назад до опису ", "Index", "Descriptions", new { id = ViewBag.BookId, name = ViewBag.BookName })
-    </div>
+    <form asp-controller="Descriptions" asp-action="Index" asp-route-id="@ViewBag.BookId" asp-route-name="@ViewBag.BookName">
+        <input type="submit" value="Назад до опису" class="btn-link" />
+    </form>
 }
