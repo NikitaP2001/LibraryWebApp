@@ -1,9 +1,30 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Лабораторна робота з ІСтаТП 2021. Бібліотека";
 }
 
 <div class="text-center">
     <h1 class="display-4">Головна</h1>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>@User.Identity.Name</p>
+
+        <form method="post" asp-controller="Account" asp-action="Logout">
+            <input type="submit" value="Вихід" />
+        </form>
+    }
+<nav class="navbar navbar-dark bg-dark">
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <a asp-controller="Account" asp-action="Login">Вхід</a>
+    }
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <a asp-controller="Account" asp-action="Register">Реєстація</a>
+    }
+        <a asp-controller="Account" asp-action="Index">Всі користувачі</a>
+        <a asp-controller="Roles" asp-action="Index">Редагування ролей</a>
+    </nav>
     <table class="table">
         <thead>
             <tr>
@@ -16,9 +37,12 @@
                 <th>
                     @Html.ActionLink("Автори", "Index", "Authors")
                 </th>
+                @if (User.IsInRole("admin"))
+                {
                 <th>
                     @Html.ActionLink("Читачі", "Index", "Readers")
                 </th>
+                }
                 <th></th>
             </tr>
         </thead>

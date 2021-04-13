@@ -18,9 +18,12 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @if (User.Identity.IsAuthenticated)
+                        {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Readers" asp-action="Details" asp-route-login="@User.Identity.Name">Сторінка читача</a>
                         </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

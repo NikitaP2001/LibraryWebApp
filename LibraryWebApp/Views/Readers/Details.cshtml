@@ -20,5 +20,12 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Редагувати</a> |
+    @if (ViewBag.BookId != null)
+    {
+        @Html.ActionLink("До книги", "Details", "Books", new { id = ViewBag.BookId })
+    }
+    else if(User.IsInRole("admin"))
+    {
     <a asp-action="Index">Назад до списку</a>
+    }
 </div>

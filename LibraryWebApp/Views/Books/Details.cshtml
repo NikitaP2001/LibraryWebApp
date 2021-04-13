@@ -62,20 +62,20 @@
                 <tr>
                     <td>
                         <div class="ava-column bl-img">
-                            @if (comment.img == null)
+                            @if (comment.Reader.img == null)
                             {
                                 <span style="display: block; width: 64px; height: 64px; background: #ccc);"></span>
                             }
                             else
                             {
-                                <img src="@comment.img" width="64" height="64">
-                            }
-                        </div>
+                                    <img style='width:80px; height:60px;' src="@comment.Reader.img">
+                             }
+                            </div>
                     </td>
                     <td class="right-td">
                         <div class="comment-entry">
                             <p>
-                                @Html.ActionLink(comment.ReaderName, "Details", "Readers", new { id = comment.ReaderId })
+                                @Html.ActionLink(comment.Reader.Login, "Details", "Readers", new { id = comment.ReaderId, BookId = ViewBag.BookId })
                                 <span>@comment.DateWritten</span>
                             </p>
                             <p>

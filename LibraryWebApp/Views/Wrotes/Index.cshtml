@@ -7,7 +7,7 @@
 <h1>Автори книги @ViewBag.BookName</h1>
 
 <p>
-    <a asp-action="Create">Додати автора до книги</a>
+    @Html.ActionLink("Додати автора до книги", "Create", "Wrotes", new { BookId = ViewBag.BookId })
 </p>
 <p>
     @Html.ActionLink("Додати нового автора", "Index", "Authors")

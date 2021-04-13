@@ -9,6 +9,31 @@
 <p>
     <a asp-action="Create">Додати жанр</a>
 </p>
+@if (User.IsInRole("admin"))
+{
+<div>
+    <h3>Оберіть exel-файл для заватаження</h3>
+    @if (ViewBag.Exception != null)
+    {
+        <h4>@ViewBag.Exception</h4>
+    }
+    @using (Html.BeginForm("Import", "Genres", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Завантажте Excel-файл:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Завантажити" />
+            </div>
+        </div>
+    }
+</div>
+<div>
+    <h3>Завантаження інформації в файл</h3>
+    <a asp-action="Export">Завантажити</a>
+</div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -51,16 +76,18 @@
 
         function drawChart() {
 
-            $.get('/api/Charts/JsonData', function(JsonData) {
+            $.get('/api/Charts/JsonData1', function(JsonData) {
                 data = google.visualization.arrayToDataTable(JsonData, false);
                 var option = {
                     title: "Співвідношення кількості книжок та жанрів",
                     width: 700,
-                    height: 400
-                };
+                    height: 400,
+                    is3D: true,
+                    backgroundColor: '002b36'
+                }
                 chart = new google.visualization.PieChart(document.getElementById('chart1'));
                 chart.draw(data, option);
-            })
+             })
         }
     </script>
 }

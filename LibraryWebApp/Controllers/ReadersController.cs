@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LibraryWebApp;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryWebApp.Controllers
 {
@@ -25,21 +26,35 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: Readers/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? BookId, string? login)
         {
-            if (id == null)
+            if (id == null && login == null)
             {
                 return NotFound();
             }
-
-            var reader = await _context.Readers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (reader == null)
+            if (login == null)
             {
-                return NotFound();
+                var reader = await _context.Readers
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (reader == null || (reader.Login != User.Identity.Name && !User.IsInRole("admin")))
+                {
+                    return NotFound();
+                }
+                ViewBag.BookId = BookId;
+                return View(reader);
             }
-
-            return View(reader);
+            else
+            {
+                var reader = await _context.Readers
+                    .FirstOrDefaultAsync(m => m.Login == login);
+                if (reader == null || (reader.Login != User.Identity.Name && !User.IsInRole("admin")))
+                {
+                    return NotFound();
+                }
+                ViewBag.BookId = BookId;
+                return View(reader);
+            }
+            return NotFound();
         }
 
         // GET: Readers/Create

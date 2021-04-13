@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using LibraryWebApp.Models;
 
 namespace LibraryWebApp
 {
@@ -24,8 +26,17 @@ namespace LibraryWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IUserValidator<User>, CustomUserValidator>();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<LibraryContext>(options => options.UseSqlServer(connection));
+            services.AddControllersWithViews();
+
+            string connectionIdentity = Configuration.GetConnectionString("IdentityConnection");
+            services.AddDbContext<IdentityContext>(options => options.UseSqlServer(connectionIdentity));
+            services.AddControllersWithViews();
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>();
+               // .AddDefaultTokenProviders();
             services.AddControllersWithViews();
         }
 
@@ -47,6 +58,7 @@ namespace LibraryWebApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

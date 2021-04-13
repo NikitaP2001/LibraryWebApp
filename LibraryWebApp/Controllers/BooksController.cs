@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using LibraryWebApp.Models;
+using LibraryWebApp.ViewModels;
 using LibraryWebApp;
 
 namespace LibraryWebApp.Controllers
@@ -12,6 +15,7 @@ namespace LibraryWebApp.Controllers
     public class BooksController : Controller
     {
         private readonly LibraryContext _context;
+        private readonly UserManager<User> _userManager;
 
         public BooksController(LibraryContext context)
         {
@@ -61,8 +65,10 @@ namespace LibraryWebApp.Controllers
             }
             ViewBag.BookId = book.Id;
             ViewBag.BookName = book.Name;
-            var AuthorsByBook = _context.Books.Where(b => b.Id == id).Include(b => b.Comments);
-            return View(await AuthorsByBook.ToListAsync());
+            var AuthorsByBook = _context.Books.Where(b => b.Id == id)
+                .Include(b => b.Comments)
+                .ThenInclude(c => (c as Comment).Reader);
+            return View(AuthorsByBook);
         }
 
         // GET: Books/Create

@@ -48,10 +48,15 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: Descriptions/Create
-        public IActionResult Create()
+        public IActionResult Create(int? BookId, string? BookName)
         {
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name");
             ViewData["TagId"] = new SelectList(_context.Tags, "Id", "Name");
+            if (BookId == null)
+            {
+                ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name");
+            }
+            ViewBag.BookId = BookId;
+            ViewBag.BookName = BookName;
             return View();
         }
 
@@ -60,29 +65,28 @@ namespace LibraryWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TagId,BookId")] Description description)
+        public async Task<IActionResult> Create(int? BookId, string? BookName, [Bind("Id,TagId,BookId")] Description description)
         {
-            int BookId = description.BookId;                        //Get bookid for redirecttoaction
-            var book = await _context.Books.FindAsync(BookId);
-            string BookName = book.Name;
-            //----------------------------------------------------------------
+            ViewBag.BookId = BookId;
+            ViewBag.BookName = BookName;
             var Desc = _context.Descriptions;   //Checks that it is no copy of connection
             foreach(var d in Desc)
             {
                 if (d.BookId == ViewBag.BookId && d.TagId == ViewBag.TagId)
                 {
-                    return RedirectToAction("Index", "Descriptions", new { id = BookId, name = BookName });
+                    return RedirectToAction("Index", "Descriptions", new { id = ViewBag.BookId, name = ViewBag.BookName });
                 }
             }
+            description.BookId = ViewBag.BookId;
             if (ModelState.IsValid)
             {
                 _context.Add(description);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Descriptions", new { id = BookId, name = BookName });
+                return RedirectToAction("Index", "Descriptions", new { id = ViewBag.BookId, name = ViewBag.BookName });
             }
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name", description.BookId);
             ViewData["TagId"] = new SelectList(_context.Tags, "Id", "Name", description.TagId);
-            return RedirectToAction("Index", "Descriptions", new { id = BookId, name = BookName });
+            return RedirectToAction("Index", "Descriptions", new { id = ViewBag.BookId, name = ViewBag.BookName });
         }
 
         // GET: Descriptions/Edit/5
@@ -156,7 +160,6 @@ namespace LibraryWebApp.Controllers
             {
                 return NotFound();
             }
-
             return View(description);
         }
 

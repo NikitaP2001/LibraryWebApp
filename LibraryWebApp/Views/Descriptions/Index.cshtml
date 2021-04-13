@@ -7,10 +7,10 @@
 <h1>Теги за книгою @ViewBag.BookName</h1>
 
 <p>
-    <a asp-action="Create">Додати тег до книги</a>
+    @Html.ActionLink("Додати тег до книги", "Create", "Descriptions", new { BookId = ViewBag.BookId, BookName = ViewBag.BookName })
 </p>
 <p>
-    @Html.ActionLink("Додати новий тег", "Index", "Tags", new { BookId = ViewBag.BookId, name = ViewBag.BookName })
+    @Html.ActionLink("Додати новий тег", "Index", "Tags")
 </p>
 <table class="table">
     <thead>

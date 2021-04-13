@@ -10,6 +10,31 @@ namespace LibraryWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    public class ChartsController1 : ControllerBase
+    {
+        private readonly LibraryContext _context;
+
+        public ChartsController1(LibraryContext context)
+        {
+            _context = context;
+        }
+        [HttpGet("JsonData2")]
+        public JsonResult JsonData2()
+        {
+            var Authors = _context.Authors.Include(a => a.Wrotes).ToList();
+            List<object> catAuthor = new List<object>();
+
+            catAuthor.Add(new[] { "Автор", "Кількість книжок" });
+
+            foreach (var c in Authors)
+            {
+                catAuthor.Add(new object[] { c.Name, c.Wrotes.Count });
+            }
+            return new JsonResult(catAuthor);
+        }
+    }
+    [Route("api/[controller]")]
+    [ApiController]
     public class ChartsController : ControllerBase
     {
         private readonly LibraryContext _context;
@@ -18,9 +43,10 @@ namespace LibraryWebApp.Controllers
         {
             _context = context;
         }
-        [HttpGet("JsonData")]
-        public JsonResult JsonData() {
-        var Genres = _context.Genres.Include(b => b.Books).ToList();
+        [HttpGet("JsonData1")]
+        public JsonResult JsonData1()
+        {
+            var Genres = _context.Genres.Include(b => b.Books).ToList();
             List<object> catBook = new List<object>();
 
             catBook.Add(new[] { "Жанр", "Кількість книжок" });
@@ -31,6 +57,19 @@ namespace LibraryWebApp.Controllers
             }
             return new JsonResult(catBook);
         }
+        [HttpGet("JsonData2")]
+        public JsonResult JsonData2()
+        {
+            var Authors = _context.Authors.Include(a => a.Wrotes).ToList();
+            List<object> catAuthor = new List<object>();
 
+            catAuthor.Add(new[] { "Автор", "Кількість книжок" });
+
+            foreach (var c in Authors)
+            {
+                catAuthor.Add(new object[] { c.Name, c.Wrotes.Count });
+            }
+            return new JsonResult(catAuthor);
+        }
     }
 }

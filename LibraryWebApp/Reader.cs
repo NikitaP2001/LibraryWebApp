@@ -21,7 +21,7 @@ namespace LibraryWebApp
         [Display(Name = "Пароль")]
         [Required(ErrorMessage = "Поле не повинно бути порожнім")]
         public string Password { get; set; }
-
+        public string img { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<ListNote> ListNotes { get; set; }
     }

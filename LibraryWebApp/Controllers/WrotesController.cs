@@ -52,10 +52,14 @@ namespace LibraryWebApp.Controllers
         }
 
         // GET: Wrotes/Create
-        public IActionResult Create()
+        public IActionResult Create(int? BookId)
         {
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name");
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name");
+            if (BookId == null)
+            {
+                ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name");
+            }
+            ViewBag.BookId = BookId;
             return View();
         }
 
@@ -64,17 +68,20 @@ namespace LibraryWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BookId,AuthorId")] Wrote wrote)
+        public async Task<IActionResult> Create(int? BookId, [Bind("Id,BookId,AuthorId")] Wrote wrote)
         {
+            ViewBag.BookId = BookId;
+            wrote.BookId = ViewBag.BookId;
+            var Book = await _context.Books.FindAsync(BookId);
             if (ModelState.IsValid)
             {
                 _context.Add(wrote);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Wrotes", new { id = Book.Id, name = Book.Name });
             }
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", wrote.AuthorId);
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name", wrote.BookId);
-            return View(wrote);
+            return RedirectToAction("Index", "Wrotes", new { id =Book.Id, name = Book.Name });
         }
 
         // GET: Wrotes/Edit/5
@@ -127,9 +134,10 @@ namespace LibraryWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            var book = await _context.Books.FindAsync(wrote.BookId);
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", wrote.AuthorId);
             ViewData["BookId"] = new SelectList(_context.Books, "Id", "Name", wrote.BookId);
-            return View(wrote);
+            return RedirectToAction("Index", "Wrotes", new { id = book.Id, name = book.Name });
         }
 
         // GET: Wrotes/Delete/5
@@ -160,7 +168,8 @@ namespace LibraryWebApp.Controllers
             var wrote = await _context.Wrotes.FindAsync(id);
             _context.Wrotes.Remove(wrote);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var book = await _context.Books.FindAsync(wrote.BookId);
+            return RedirectToAction("Index", "Wrotes", new { id = book.Id, name = book.Name });
         }
 
         private bool WroteExists(int id)
